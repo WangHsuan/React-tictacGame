@@ -1,0 +1,80 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<script crossorigin src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style type="text/css">
+    .board{
+        width:300px;height:300px;margin:50px auto;
+        border:5px solid #000000;border-radius:10px;
+        position:relative;
+    }
+    .board>.cell{
+        box-sizing:border-box;
+        width:100px;height:100px;line-height:100px;font-size:50px;
+        text-align:center;border:1px solid #000000;cursor:pointer;
+        display:inline-block;vertical-align:middle;
+    }
+    
+</style>
+<script type="text/babel">
+
+class Cell extends React.Component{
+    render(){
+        let text="";
+        if(this.props.mark===0){
+            text="O";
+        } else if(this.props.mark===1){
+            text="X";
+        }
+        return <div className="cell" onClick={this.click.bind(this)}>{text}</div>;
+    }
+    click(){
+        this.props.update(this.props.index);
+    }
+}
+class Board extends React.Component{
+    constructor(props){
+        super(props);
+        this.state={
+            circle:0,
+            marks:[-1,-1,-1,-1,-1,-1,-1,-1,-1],
+            winner:null
+        }
+    }
+    render(){
+        let cells=[];
+        for(let i=0;i<this.state.marks.length;i++){
+            cells.push(<Cell index={i} mark={this.state.marks[i]} update={this.updateMark.bind(this)}/>);
+        }
+        return <div className="board">{cells}</div>
+    }
+    updateMark(index){
+        let currentMark = this.state.marks[index];
+        if(currentMark===-1&&this.state.winner===null){
+            this.setState((preState)=>{
+                let mark = preState.circle%2;
+                preState.marks[index]=mark;
+                return{
+                    circle:preState.circle+1,
+                    marks:preState.marks
+                }
+            })
+        }
+    }
+    checkWinner(marks){}
+
+}
+window.addEventListener("load",()=>{
+    ReactDOM.render(<Board/>,document.body);
+})
+</script>
+<body>
+    
+</body>
+</html>
